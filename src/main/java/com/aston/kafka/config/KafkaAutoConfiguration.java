@@ -34,22 +34,26 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties(KafkaStarterProperties.class)
 @ConditionalOnClass(KafkaStarterProperties.class)
-@ConditionalOnProperty(prefix = "app.common.kafka", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+        prefix = "app.common.kafka",
+        name = "enabled",
+        havingValue = "true",
+        matchIfMissing = true)
 @RequiredArgsConstructor
 public class KafkaAutoConfiguration {
 
     private final KafkaStarterProperties properties;
+
+    @PostConstruct
+    void init() {
+        log.info("KafkaAutoConfiguration initialized");
+    }
 
     @Bean
     public KafkaAdmin admin() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, properties.bootstrapServers());
         return new KafkaAdmin(configs);
-    }
-
-    @PostConstruct
-    void init() {
-        log.info("KafkaAutoConfiguration initialized");
     }
 
     @Bean
@@ -76,6 +80,7 @@ public class KafkaAutoConfiguration {
 
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public DefaultKafkaProducerFactory<?, ?> kafkaProducerFactory(KafkaProperties kafkaProperties) {
         var producerProperties = kafkaProperties.buildProducerProperties(null);
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.bootstrapServers());
@@ -87,6 +92,7 @@ public class KafkaAutoConfiguration {
 
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public DefaultKafkaConsumerFactory<?, ?> kafkaConsumerFactory(KafkaProperties kafkaProperties) {
         var consumerProperties = kafkaProperties.buildConsumerProperties(null);
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.bootstrapServers());
@@ -97,6 +103,7 @@ public class KafkaAutoConfiguration {
 
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory(DefaultKafkaConsumerFactory kafkaConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -107,6 +114,7 @@ public class KafkaAutoConfiguration {
 
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public KafkaTemplate<?, ?> kafkaTemplate(DefaultKafkaProducerFactory kafkaProducerFactory) {
         KafkaTemplate<?, ?> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory);
         kafkaTemplate.setMessageConverter(recordMessageConverter());
