@@ -12,7 +12,7 @@
 
     <groupId>com.aston.libraries.starters</groupId>
     <artifactId>kafka-spring-boot-starter</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>kafka-spring-boot-starter</name>
     <description>Custom Kafka starter</description>
 
