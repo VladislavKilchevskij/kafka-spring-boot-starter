@@ -96,7 +96,7 @@ public class KafkaAutoConfiguration {
     public DefaultKafkaConsumerFactory<?, ?> kafkaConsumerFactory(KafkaProperties kafkaProperties) {
         var consumerProperties = kafkaProperties.buildConsumerProperties(null);
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.bootstrapServers());
-        consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, properties.consumer().groupId());
+        consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "default-kafka-group");
         consumerProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.consumer().autoOffsetReset());
         return new DefaultKafkaConsumerFactory<>(consumerProperties);
     }

@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.util.Map;
+
 @Slf4j
 @ConfigurationProperties("app.common.kafka")
 public record KafkaStarterProperties(
@@ -31,7 +33,7 @@ public record KafkaStarterProperties(
     }
 
     public record ConsumerProperties(
-            @DefaultValue("default-group") String groupId,
+            Map<String, String> groupId,
             @DefaultValue("earliest") String autoOffsetReset
     ) {
     }
